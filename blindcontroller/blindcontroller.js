@@ -784,15 +784,16 @@ module.exports = function(RED) {
         blinds[i].sunInWindow != previousSunInWindow ||
         blinds[i].blindPositionReasonCode != previousBlindPositionReasonCode
       ) {
-        msg.payload = blinds[i];
-        msg.data = {
+        let outMsg = {...msg}
+        outMsg.payload = blinds[i];
+        outMsg.data = {
           channel: blinds[i].channel,
           altitude: sunPosition.altitude,
           azimuth: sunPosition.azimuth,
           blindPosition: blinds[i].blindPosition
         };
-        msg.topic = "blind";
-        node.send(msg);
+        outMsg.topic = "blind";
+        node.send(outMsg);
       }
     }
   }
@@ -896,7 +897,6 @@ module.exports = function(RED) {
      */
     this.on("input", function(msg) {
       var validMsg = validateMsg(node, msg);
-
       if (validMsg) {
         switch (msg.topic) {
           case "sun":
